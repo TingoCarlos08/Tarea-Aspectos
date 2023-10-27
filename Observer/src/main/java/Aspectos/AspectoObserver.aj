@@ -45,6 +45,24 @@ public aspect AspectoObserver {
 	    }
 	    
 	//Continuación de codigo
+	    pointcut buttonClickEvent( JPanel jp, Color c) : 
+	    execution(void GUI.ButtonEvent.updateBackground(JPanel, Color)) && args(jp,c);
+
+	    before(JPanel jp, Color c) : buttonClickEvent(jp, c) {
+	        String logMessage = String.format("[Registro de Eventos] Botón clickeado en %s", LocalDateTime.now());
+	        insertIntoTxt(logMessage);
+	        
+	    }
 	    
+	    public void insertIntoTxt(String message) {
+	    	try (BufferedWriter br=new BufferedWriter(new FileWriter(filepath,true))){
+
+	               br.write(message);
+	               br.newLine(); 
+	               
+	           } catch (IOException e) {
+	               e.printStackTrace();
+	           }
+	    }
 }
 
